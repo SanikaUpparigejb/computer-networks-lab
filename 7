@@ -1,0 +1,71 @@
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.Scanner;
+
+public class RSA {
+    
+    private BigInteger p;          // First large prime number
+    private BigInteger q;          // Second large prime number
+    private BigInteger n;          // n = p * q
+    private BigInteger phi;        // phi = (p-1) * (q-1)
+    private BigInteger e;          // Public exponent
+    private BigInteger d;          // Private exponent
+    private int bitLength = 1024;  // Number of bits for generating large primes
+
+    // Constructor to initialize RSA key components
+    public RSA() {
+        SecureRandom random = new SecureRandom();
+        // Generate two large random prime numbers p and q
+        p = BigInteger.probablePrime(bitLength, random);
+        q = BigInteger.probablePrime(bitLength, random);
+        
+        // Compute n = p * q
+        n = p.multiply(q);
+        
+        // Compute phi = (p-1) * (q-1)
+        phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+        
+        // Select public key e such that 1 < e < phi and gcd(e, phi) = 1
+        e = BigInteger.probablePrime(bitLength / 2, random);
+        while (phi.gcd(e).compareTo(BigInteger.ONE) != 0 && e.compareTo(phi) < 0) {
+            e = e.add(BigInteger.ONE);
+        }
+        
+        // Compute private key d such that (e * d) % phi = 1
+        d = e.modInverse(phi);
+    }
+
+    // Encrypts a message
+    public BigInteger encrypt(BigInteger message) {
+        return message.modPow(e, n);
+    }
+
+    // Decrypts a message
+    public BigInteger decrypt(BigInteger encrypted) {
+        return encrypted.modPow(d, n);
+    }
+
+    // Main method for testing the RSA algorithm
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        RSA rsa = new RSA();
+
+        // Display public and private keys
+        System.out.println("Public Key (n, e): (" + rsa.n + ", " + rsa.e + ")");
+        System.out.println("Private Key (n, d): (" + rsa.n + ", " + rsa.d + ")");
+        
+        // Input message from the user
+        System.out.print("Enter a message (as a number): ");
+        BigInteger message = scanner.nextBigInteger();
+        
+        // Encrypt the message
+        BigInteger encrypted = rsa.encrypt(message);
+        System.out.println("Encrypted Message: " + encrypted);
+        
+        // Decrypt the message
+        BigInteger decrypted = rsa.decrypt(encrypted);
+        System.out.println("Decrypted Message: " + decrypted);
+        
+        scanner.close();
+    }
+}
