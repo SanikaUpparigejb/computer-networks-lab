@@ -1,0 +1,52 @@
+import java.util.Scanner;
+
+public class FrameSorter {
+    
+    // Method to perform bubble sort
+    public static void bubbleSort(int[] frames) {
+        int n = frames.length;
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                // Swap if the current frame is greater than the next frame
+                if (frames[j] > frames[j + 1]) {
+                    int temp = frames[j];
+                    frames[j] = frames[j + 1];
+                    frames[j + 1] = temp;
+                }
+            }
+        }
+    }
+    
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Input the number of frames
+        System.out.print("Enter the number of frames: ");
+        int numFrames = scanner.nextInt();
+        
+        // Array to store frames
+        int[] frames = new int[numFrames];
+        
+        // Input each frame
+        System.out.println("Enter the frames:");
+        for (int i = 0; i < numFrames; i++) {
+            frames[i] = scanner.nextInt();
+        }
+        
+        // Sort the frames
+        bubbleSort(frames);
+        
+        // Output the sorted frames
+        System.out.println("Sorted frames:");
+        for (int frame : frames) {
+            System.out.print(frame + " ");
+        }
+    }
+}
+
+SAMPLE OUTPUT :
+Enter the number of frames: 5
+Enter the frames:
+4 1 3 5 2
+Sorted frames:
+1 2 3 4 5
